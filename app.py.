@@ -1,0 +1,175 @@
+
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+# Page configuration
+st.set_page_config(
+    page_title="Quantum Coders | Smart Composting",
+    page_icon="🌱",
+    layout="wide"
+)
+
+# Dashboard heading
+st.title("🌱 AI-Based Smart Composting System")
+st.subheader("Quantum Coders")
+st.caption("Smart Waste Management | AI & ML Hackathon")
+
+st.divider()
+
+# Sidebar inputs
+st.sidebar.header("Compost Sensor Inputs")
+
+temperature = st.sidebar.slider(
+    "Temperature (°C)",
+    min_value=0,
+    max_value=80,
+    value=35
+)
+
+moisture = st.sidebar.slider(
+    "Moisture (%)",
+    min_value=0,
+    max_value=100,
+    value=50
+)
+
+age = st.sidebar.number_input(
+    "Composting Age (days)",
+    min_value=0,
+    max_value=365,
+    value=15
+)
+
+# Prediction function
+# Replace this function with the trained ML model later
+def predict_condition(temp, moisture, age):
+
+    if moisture < 40:
+        return (
+            "Needs Water",
+            "Add a small amount of water."
+        )
+
+    elif moisture > 65:
+        return (
+            "Too Wet",
+            "Improve aeration and drainage."
+        )
+
+    elif temp < 20:
+        return (
+            "Low Activity",
+            "Check the compost mixture."
+        )
+
+    elif age >= 60:
+        return (
+            "Maturity Candidate",
+            "Check maturity before use."
+        )
+
+    else:
+        return (
+            "Active Composting",
+            "Continue monitoring."
+        )
+
+
+condition, recommendation = predict_condition(
+    temperature,
+    moisture,
+    age
+)
+
+# Sensor metrics
+st.header("Compost Monitoring")
+
+col1, col2, col3 = st.columns(3)
+
+col1.metric(
+    "Temperature",
+    f"{temperature} °C"
+)
+
+col2.metric(
+    "Moisture",
+    f"{moisture}%"
+)
+
+col3.metric(
+    "Composting Age",
+    f"{age} days"
+)
+
+st.divider()
+
+# Prediction section
+st.header("Compost Analysis")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("Predicted Condition")
+
+    if condition == "Needs Water":
+        st.warning(condition)
+
+    elif condition == "Too Wet":
+        st.warning(condition)
+
+    elif condition == "Maturity Candidate":
+        st.success(condition)
+
+    else:
+        st.info(condition)
+
+with col2:
+    st.subheader("Recommendation")
+    st.write(recommendation)
+
+st.divider()
+
+# Sensor readings graph
+st.header("Sensor Readings")
+
+data = pd.DataFrame({
+    "Parameter": ["Temperature", "Moisture"],
+    "Reading": [temperature, moisture]
+})
+
+fig, ax = plt.subplots()
+
+ax.bar(
+    data["Parameter"],
+    data["Reading"]
+)
+
+ax.set_ylabel("Value")
+ax.set_title("Current Compost Conditions")
+
+st.pyplot(fig)
+
+st.divider()
+
+# Project information
+st.header("Project Information")
+
+st.write(
+    "Our system monitors compost conditions and provides "
+    "recommendations to improve composting."
+)
+
+st.write("Team: Quantum Coders")
+st.write("Team Leader: Srujan")
+st.write("Team Members: Sharath, Sneha, Shakthi")
+
+st.caption(
+    "Prototype demonstration using simulated sensor inputs. "
+    "The current prediction logic is rule-based, not a trained ML model."
+)
+
+st.caption(
+    "Last updated: " + datetime.now().strftime("%H:%M:%S")
+)
